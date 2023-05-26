@@ -4,10 +4,8 @@ package flumine.sgm.auxilium.services;
 import flumine.sgm.auxilium.exceptions.ResourceAlreadyExistException;
 import flumine.sgm.auxilium.exceptions.ResourceNotFoundException;
 import flumine.sgm.auxilium.models.UserModel;
-import flumine.sgm.auxilium.repositories.RoleRepository;
 import flumine.sgm.auxilium.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 

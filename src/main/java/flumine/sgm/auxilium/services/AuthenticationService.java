@@ -5,10 +5,7 @@ import flumine.sgm.auxilium.auth.AuthenticationResponse;
 import flumine.sgm.auxilium.auth.RegisterRequest;
 import flumine.sgm.auxilium.exceptions.BadTokenException;
 import flumine.sgm.auxilium.exceptions.ResourceNotFoundException;
-import flumine.sgm.auxilium.models.ERole;
-import flumine.sgm.auxilium.models.RoleModel;
 import flumine.sgm.auxilium.models.UserModel;
-import flumine.sgm.auxilium.repositories.RoleRepository;
 import flumine.sgm.auxilium.repositories.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,7 +27,7 @@ import java.util.Map;
 public class AuthenticationService {
     private final UserService userService;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+
     private final PasswordEncoder passwordEncoder;
     private final EmailSenderService emailService;
     private final JwtService jwtService;
@@ -82,7 +79,6 @@ public class AuthenticationService {
 //        userService.existByUsername(request.getUsername());
 
         UserModel user = userService.checkExistUser(request.getUsername(), request.getEmail());
-        RoleModel user_role = roleRepository.findByRole(ERole.ROLE_USER).orElse(new RoleModel());
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));

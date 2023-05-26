@@ -9,7 +9,6 @@ package flumine.sgm.auxilium.config;
 //import com.flumine.securityjwtauth20.services.EmailSenderService;
 
 import flumine.sgm.auxilium.models.UserModel;
-import flumine.sgm.auxilium.repositories.RoleRepository;
 import flumine.sgm.auxilium.repositories.UserRepository;
 import flumine.sgm.auxilium.services.EmailSenderService;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class ApplicationConfig {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final EmailSenderService emailService;
 
     @Bean
