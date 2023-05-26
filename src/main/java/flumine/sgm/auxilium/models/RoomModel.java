@@ -20,5 +20,17 @@ public class RoomModel {
     Long UserID;
 
 
+    public RoomModel(String role, Long userID) {
+        this.role = role;
+        UserID = userID;
+    }
 
+    public RoomModel(RoomModel model) {
+        this.role = model.role;
+        UserID = model.UserID;
+    }
+
+    public RoomModel() {
+
+    }
 }
