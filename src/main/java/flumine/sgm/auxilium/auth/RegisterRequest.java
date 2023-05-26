@@ -13,13 +13,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterRequest {
-//    @NotBlank(message = "username should not be empty")
+    @NotBlank(message = "username should not be empty")
 //    @Pattern(regexp = "/^[a-z0-9_-]{3,16}$/", message = "username can contain letters, numbers and underscores, length [3, 16]")
+    @Pattern(regexp = "^(?=.*[A-Za-z0-9]$)[A-Za-z][A-Za-z\\d.-]{0,19}$", message = "username can contain letters, numbers and underscores, length [3, 16]")
     private String username;
-//    @Email
-//    @NotBlank
+    @Email
+    @NotBlank
     private String email;
-//    @NotBlank
-//    @Pattern(regexp = "/^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/", message = "password should not be simple")
+    @NotBlank
+    @Pattern(regexp = "/^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/", message = "password should not be simple")
     private String password;
 }

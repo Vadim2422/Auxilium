@@ -78,7 +78,8 @@ public class AuthenticationService {
 //        userService.existByEmail(request.getEmail());
 //        userService.existByUsername(request.getUsername());
 
-        UserModel user = userService.checkExistUser(request.getUsername(), request.getEmail());
+        userService.checkExistUser(request.getUsername(), request.getEmail());
+        UserModel user = userService.loadByUsernameAndEmail(request.getUsername(), request.getEmail());
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));

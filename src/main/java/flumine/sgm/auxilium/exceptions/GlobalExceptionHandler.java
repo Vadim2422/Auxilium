@@ -9,14 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Spliterator;
-import java.util.Spliterators;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -52,20 +51,31 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new AppError(HttpStatus.FORBIDDEN.value(), e.getMessage()).toJSON(), HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ValidationErrorResponse> onConstraintValidationException(
-            ConstraintViolationException e
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> onConstraintValidationException(
+            MethodArgumentNotValidException e
     ) {
 
-        final List<Violation> violations = e.getConstraintViolations().stream()
-                .map(
-                        violation -> Violation.builder()
-                                .fieldName(violation.getPropertyPath().toString()
-                                        .substring(violation.getPropertyPath().toString().lastIndexOf(".") + 1))
-                                .message(violation.getMessage())
-                                .build()
-                )
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(new ValidationErrorResponse(violations), HttpStatus.BAD_REQUEST);
+        Map<String, String> errors = new HashMap<>();
+        e.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return new ResponseEntity<>(errors, HttpStatus.BAD_GATEWAY);
     }
+
+
+
+//        final List<Violation> violations = e.getConstraintViolations().stream()
+//                .map(
+//                        violation -> Violation.builder()
+//                                .fieldName(violation.getPropertyPath().toString()
+//                                        .substring(violation.getPropertyPath().toString().lastIndexOf(".") + 1))
+//                                .message(violation.getMessage())
+//                                .build()
+//                )
+//                .collect(Collectors.toList());
+//        return new ResponseEntity<>(new ValidationErrorResponse(violations), HttpStatus.BAD_REQUEST);
+//    }
 }

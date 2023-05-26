@@ -29,22 +29,32 @@ public class UserService {
             throw new ResourceAlreadyExistException(String.format("User with email '%s' already exist", email));
     }
 
-    public UserModel checkExistUser(String username, String email)
+    public void checkExistUser(String username, String email)
     {
         UserModel user = userRepository.findByUsernameIgnoreCase(username).orElse(null);
         if (user != null && user.getEnabled()) throw new ResourceAlreadyExistException("Username already exist");
         user = userRepository.findByEmailIgnoreCase(email).orElse(null);
-        if (user != null && user.getEnabled()) throw new ResourceAlreadyExistException("Username already exist");
-        if (user == null) user = new UserModel();
-        return user;
+        if (user != null && user.getEnabled()) throw new ResourceAlreadyExistException("Email already exist");
     }
 
     public UserModel loadByUsernameOrEmail(String user) {
         return userRepository.findByEmailIgnoreCaseOrUsernameIgnoreCase(user, user).orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
+    public UserModel loadByUsernameAndEmail(String username, String email) {
+        UserModel user1 = userRepository.findByUsernameIgnoreCase(username).orElse(null);
+        UserModel user2 = userRepository.findByEmailIgnoreCase(email).orElse(null);
+        if (user1 != null) return user1;
+        if (user2 != null) return user2;
+        return new UserModel();
+    }
+
     public UserModel loadByUsername(String user) {
         return userRepository.findByUsernameIgnoreCase(user).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    public UserModel loadByEmail(String email) {
+        return userRepository.findByEmailIgnoreCase(email).orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
 }
