@@ -15,9 +15,19 @@ public class MessageAIModel {
     Long id;
 
     @Column
+    String content;
+
+    @Column
     Long RoomID;
 
     @Column
     Date date;
 
+    public MessageAIModel(String content, Long roomID, Date date) {
+        this.content = content;
+        RoomID = roomID;
+        this.date = date;
+    }
+    //{"role": "user", "content": "Hello!"}
+    //TODO: toString
 }

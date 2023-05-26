@@ -14,6 +14,9 @@ public class RoomModel {
     Long id;
 
     @Column
+    String name;
+
+    @Column
     String role;
 
     @Column
@@ -26,6 +29,7 @@ public class RoomModel {
     }
 
     public RoomModel(RoomModel model) {
+        this.name = model.name;
         this.role = model.role;
         UserID = model.UserID;
     }

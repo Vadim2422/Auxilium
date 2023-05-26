@@ -32,7 +32,7 @@ public class RoomController {
     }
     @PostMapping("/createroom")
     ResponseEntity<?> createRoom(@RequestBody RoomModel room){
-        roomRepository.save(new RoomModel(room));//TODO:change to gpt session number
+        roomRepository.save(new RoomModel(room));//TODO:add complection create
         return new ResponseEntity<>("201", HttpStatus.CREATED);
     }
     @PostMapping("/getaimessages")
