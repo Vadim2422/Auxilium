@@ -2,23 +2,19 @@ package flumine.sgm.auxilium.responses.openai;
 
 import java.util.Vector;
 
-public class OpenAICompletionResponse {
+public class OpenAIChatCompletionResponse {
     protected String id;
     protected String object;
     protected Integer created;
-    protected String model;
-
-    protected Vector<OpenAICompletionChoice> choices;
-
+    protected Vector<OpenAIChatCompletionChoice> choices;
     protected OpenAIUsage usage;
 
-    public OpenAICompletionResponse() {}
+    public OpenAIChatCompletionResponse() {}
 
-    public OpenAICompletionResponse(String id, String object, Integer created, String model, Vector<OpenAICompletionChoice> choices, OpenAIUsage usage) {
+    public OpenAIChatCompletionResponse(String id, String object, Integer created, Vector<OpenAIChatCompletionChoice> choices, OpenAIUsage usage) {
         this.id = id;
         this.object = object;
         this.created = created;
-        this.model = model;
         this.choices = choices;
         this.usage = usage;
     }
@@ -47,19 +43,11 @@ public class OpenAICompletionResponse {
         this.created = created;
     }
 
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public Vector<OpenAICompletionChoice> getChoices() {
+    public Vector<OpenAIChatCompletionChoice> getChoices() {
         return choices;
     }
 
-    public void setChoices(Vector<OpenAICompletionChoice> choices) {
+    public void setChoices(Vector<OpenAIChatCompletionChoice> choices) {
         this.choices = choices;
     }
 

@@ -1,12 +1,16 @@
 package flumine.sgm.auxilium.services;
 
-import flumine.sgm.auxilium.requests.openai.OpenAIChatCompletionsRequest;
+import flumine.sgm.auxilium.requests.openai.OpenAIChatCompletionRequest;
+import flumine.sgm.auxilium.requests.openai.OpenAICompletionRequest;
 import flumine.sgm.auxilium.requests.openai.OpenAIMessage;
 import flumine.sgm.auxilium.requests.openai.OpenAIRequestBody;
+import flumine.sgm.auxilium.responses.openai.OpenAIChatCompletionResponse;
 import flumine.sgm.auxilium.responses.openai.OpenAICompletionResponse;
 import flumine.sgm.auxilium.repositories.ModelClassificationRepository;
 import flumine.sgm.auxilium.repositories.UserRepository;
 
+import flumine.sgm.auxilium.responses.openai.OpenAIModelData;
+import flumine.sgm.auxilium.responses.openai.OpenAIModelsResponse;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -22,24 +26,13 @@ public class OpenAIService {
     // protected String token = "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";
     protected String token = "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";
 
-    protected String _baseUrl = "https://api.openai.com/v1/";
-
-    // Injected repositories
-    protected UserRepository _userRepository;
-    protected ModelClassificationRepository _modelRepository;
+    protected String _baseUrl = "https://api.openai.com/v1";
 
     protected WebClient _webClient;
 
-    /// Temperature controls flow of fantasies of model. Let's use something in the
-    /// middle for proper work
     protected long _defaultTemperature = 1;
 
-    // static protected Logger _openAILogger;
-
-    public OpenAIService(UserRepository userRepository,
-                         ModelClassificationRepository modelClassificationRepository) {
-        this._userRepository = userRepository;
-        this._modelRepository = modelClassificationRepository;
+    public OpenAIService() {
         this._webClient = WebClient.builder()
                 .baseUrl(this._baseUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -47,37 +40,51 @@ public class OpenAIService {
                 .build();
     }
 
+    public Mono<OpenAICompletionResponse> sendCompletion(
+            String model,
+            String prompt) throws WebClientException {
+        var body = new OpenAICompletionRequest(
+                model,
+                prompt,
+                100,
+                this._defaultTemperature
+        );
 
-    public void sendMessageToChat(Integer id, String message_text) {
-        try {
-            var response = this.sendMessage("gpt-3.5-turbo", message_text);
-            response.subscribe(openAIMessageResponse ->
-                    System.out.println(openAIMessageResponse
-                            .getPrompt())
-            );
-        } catch (WebClientException exception) {
-            System.out.println(exception);
-        }
+        return this._webClient
+                .method(HttpMethod.POST)
+                .uri("/completions")
+                .body(Mono.just(body), OpenAICompletionRequest.class)
+                .retrieve()
+                .bodyToMono(OpenAICompletionResponse.class);
     }
 
-
-    protected Mono<OpenAICompletionResponse> sendMessage(
-            String model,
-            String msg) throws WebClientException {
-        var body = new OpenAIChatCompletionsRequest();
-        body.setModel("model");
-        var messages = new Vector<OpenAIMessage>();
-        var message = new OpenAIMessage();
-        message.setRole("user");
-        message.setContent(msg);
-        messages.add(message);
-        body.setMessages(messages);
+    public Mono<OpenAIChatCompletionResponse> sendChatCompletionWithContext(
+        String model,
+        Vector<OpenAIMessage> messages
+    ) {
+        var body = new OpenAIChatCompletionRequest(model, messages);
 
         return this._webClient
                 .method(HttpMethod.POST)
                 .uri("/chat/completions")
-                .body(Mono.just(body), OpenAIRequestBody.class)
+                .body(Mono.just(body), OpenAIChatCompletionRequest.class)
                 .retrieve()
-                .bodyToMono(OpenAICompletionResponse.class);
+                .bodyToMono(OpenAIChatCompletionResponse.class);
+    }
+
+    public Mono<OpenAIModelsResponse> getAllModels() {
+        return this._webClient
+                .method(HttpMethod.GET)
+                .uri("/models")
+                .retrieve()
+                .bodyToMono(OpenAIModelsResponse.class);
+    }
+
+    public Mono<OpenAIModelData> getModelInfo(String modelName) {
+        return this._webClient
+                .method(HttpMethod.GET)
+                .uri("/models/" + modelName)
+                .retrieve()
+                .bodyToMono(OpenAIModelData.class);
     }
 }

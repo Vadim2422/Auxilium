@@ -4,6 +4,12 @@ public class OpenAIMessage {
     protected String role;
     protected String content;
 
+    public OpenAIMessage() {}
+
+    public OpenAIMessage(String role, String content) {
+        this.role = role;
+        this.content = content;
+    }
 
     public String getRole() {
         return role;

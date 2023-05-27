@@ -1,10 +1,15 @@
 package flumine.sgm.auxilium.responses.openai;
 
-import java.io.Serializable;
+public class OpenAIMessage {
+    protected String role;
+    protected String content;
 
-public class OpenAIMessageContent {
-    private String role;
-    private String content;
+    public OpenAIMessage() {}
+
+    public OpenAIMessage(String role, String content) {
+        this.role = role;
+        this.content = content;
+    }
 
     public String getRole() {
         return role;

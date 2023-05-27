@@ -1,11 +1,17 @@
 package flumine.sgm.auxilium.responses.openai;
 
-import java.io.Serializable;
+public class OpenAIUsage {
+    protected Integer prompt_tokens;
+    protected Integer completion_tokens;
+    protected Integer total_tokens;
 
-public class OpenAIMessageUsage {
-    private Integer prompt_tokens;
-    private Integer completion_tokens;
-    private Integer total_tokens;
+    public OpenAIUsage() {}
+
+    public OpenAIUsage(Integer prompt_tokens, Integer completion_tokens, Integer total_tokens) {
+        this.prompt_tokens = prompt_tokens;
+        this.completion_tokens = completion_tokens;
+        this.total_tokens = total_tokens;
+    }
 
     public Integer getPrompt_tokens() {
         return prompt_tokens;
