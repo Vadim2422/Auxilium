@@ -24,10 +24,10 @@ public class AuthenticationController {
 
     private final AuthenticationService service;
 
-    @GetMapping("/")
-    public ResponseEntity<?> index() {
-        return ResponseEntity.ok("Its work");
-    }
+//    @GetMapping("/")
+//    public ResponseEntity<?> index() {
+//        return ResponseEntity.ok("Its work");
+//    }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(

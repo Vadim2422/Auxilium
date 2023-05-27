@@ -11,6 +11,7 @@ import flumine.sgm.auxilium.repositories.UserRepository;
 
 import flumine.sgm.auxilium.responses.openai.OpenAIModelData;
 import flumine.sgm.auxilium.responses.openai.OpenAIModelsResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -24,7 +25,8 @@ import java.util.Vector;
 public class OpenAIService {
     // Token for OpenAI
     // protected String token = "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";
-    protected String token = "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";
+    @Value("${gpt_token}")
+    protected String token;
 
     protected String _baseUrl = "https://api.openai.com/v1";
 
