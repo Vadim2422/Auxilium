@@ -1,8 +1,6 @@
 package flumine.sgm.auxilium.requests.openai;
 
-import java.io.Serializable;
-
-public class OpenAIMessage implements Serializable {
+public class OpenAIMessage {
     protected String role;
     protected String content;
 

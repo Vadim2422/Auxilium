@@ -1,5 +1,6 @@
 package flumine.sgm.auxilium.services;
 
+import flumine.sgm.auxilium.requests.openai.OpenAIChatCompletionsRequest;
 import flumine.sgm.auxilium.requests.openai.OpenAIMessage;
 import flumine.sgm.auxilium.requests.openai.OpenAIRequestBody;
 import flumine.sgm.auxilium.responses.openai.OpenAICompletionResponse;
@@ -20,7 +21,8 @@ import java.util.Vector;
 @Service
 public class OpenAIService {
     // Token for OpenAI
-    protected String token = "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";
+    // protected String token = "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";
+    protected String token = "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";
 
     protected String _baseUrl = "https://api.openai.com/v1/";
 
@@ -53,7 +55,7 @@ public class OpenAIService {
     // TODO: Void -> ?Model?
     public void sendMessageToChat(Integer id, String message_text) {
         try {
-            var response = this.sendMessage("gpt-3.5-turbo-0301", message_text);
+            var response = this.sendMessage("gpt-3.5-turbo", message_text);
             response.subscribe(openAIMessageResponse ->
                     System.out.println(openAIMessageResponse
                             .getPrompt())
@@ -66,16 +68,23 @@ public class OpenAIService {
     protected Mono<OpenAICompletionResponse> sendMessage(
             String model,
             String msg) throws WebClientException {
-        var body = new OpenAIRequestBody();
-        body.setModel(model);
-        body.setPrompt(msg);
-        body.setMax_tokens(7);
-        body.setTemperature(this._defaultTemperature);
+        var body = new OpenAIChatCompletionsRequest();
+        body.setModel("model");
+        var messages = new Vector<OpenAIMessage>();
+        var message = new OpenAIMessage();
+        message.setRole("user");
+        message.setContent(msg);
+        messages.add(message);
+        body.setMessages(messages);
 
         return this._webClient
                 .method(HttpMethod.POST)
-                .uri("/completions")
+                .uri("/chat/completions")
                 .body(Mono.just(body), OpenAIRequestBody.class)
-                .retrieve().bodyToMono(OpenAICompletionResponse.class);
+                .bodyToMono(mono -> {
+                  if (mono.getStatus() == HttpStatus.OK) {
+
+                  }
+                });
     }
 }
