@@ -17,9 +17,8 @@ import java.util.function.Function;
 public class JwtService {
 
     private static final String SECRET_KEY = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
-    private static final Integer ACCESS_TOKEN_TIME = 15 * 60 * 1000;
-    private static final Integer EMAIL_TOKEN_TIME = 15 * 60 * 1000;
-    private static final Integer REFRESH_TOKEN_TIME = 7 * 24 * 60 * 60 * 1000;
+    private static final Long USER_TOKEN_TIME = 2629700000L ;
+
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -30,21 +29,16 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateAccessToken(Map<String, Object> extraClaims,
-                                      UserDetails userDetails)
+    public String generateUserToken(Map<String, Object> extraClaims,
+                                    UserDetails userDetails)
     {
-        return generateToken(extraClaims, userDetails, ACCESS_TOKEN_TIME);
-    }
-    public String generateRefreshToken(Map<String, Object> extraClaims,
-                                       UserDetails userDetails)
-    {
-        return generateToken(extraClaims, userDetails, REFRESH_TOKEN_TIME);
+        return generateToken(extraClaims, userDetails, USER_TOKEN_TIME);
     }
 
     public String generateToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails,
-            Integer expire_time
+            Long expire_time
     ) {
         return Jwts
                 .builder()

@@ -10,7 +10,7 @@ package flumine.sgm.auxilium.config;
 
 import flumine.sgm.auxilium.models.UserModel;
 import flumine.sgm.auxilium.repositories.UserRepository;
-import flumine.sgm.auxilium.services.EmailSenderService;
+import flumine.sgm.auxilium.services.EmailConfirmationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class ApplicationConfig {
 
     private final UserRepository userRepository;
-    private final EmailSenderService emailService;
+    private final EmailConfirmationService emailService;
 
     @Bean
     public UserDetailsService userDetailsService() {

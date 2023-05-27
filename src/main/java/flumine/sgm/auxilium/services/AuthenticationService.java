@@ -6,9 +6,13 @@ import flumine.sgm.auxilium.auth.RegisterRequest;
 import flumine.sgm.auxilium.exceptions.BadTokenException;
 import flumine.sgm.auxilium.exceptions.ResourceNotFoundException;
 import flumine.sgm.auxilium.models.UserModel;
+import flumine.sgm.auxilium.models.VerificationToken;
 import flumine.sgm.auxilium.repositories.UserRepository;
+import flumine.sgm.auxilium.repositories.VerificationTokenRepository;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,42 +31,37 @@ import java.util.Map;
 public class AuthenticationService {
     private final UserService userService;
     private final UserRepository userRepository;
+    private final VerificationTokenRepository verificationTokenRepository;
 
     private final PasswordEncoder passwordEncoder;
-    private final EmailSenderService emailService;
+    private final EmailConfirmationService emailService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse authenticate(@Valid AuthenticationRequest request) {
+    public String authenticate(@Valid AuthenticationRequest request) {
 
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getLogin(),
-                            request.getPassword()
-                    )
-            );
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getLogin(),
+                        request.getPassword()
+                )
+        );
 
         var user = userService.loadByUsernameOrEmail(request.getLogin());
-        return create_tokens(user);
+        return create_token(user);
     }
 
-    public AuthenticationResponse create_tokens(UserModel user)
+    public String create_token(UserModel user)
     {
         Map<String, Object> claims = new HashMap<>();
         claims.put("token_type", "Bearer");
-        String access_token = jwtService.generateAccessToken(claims, user);
-        return AuthenticationResponse.builder()
-
-                .access_token(access_token)
-                .refresh_token(jwtService.generateRefreshToken(claims, user))
-                .expired_in(jwtService.extractExpiration(access_token))
-                .build();
+        return jwtService.generateUserToken(claims, user);
     }
 
     public String get_token_from_request(HttpServletRequest request)
     {
         String token = request.getHeader("Authorization");
-        if (token == null)  throw new BadTokenException();
+        if (token == null)  throw new BadTokenException("Bad token");
         return request.getHeader("Authorization").replace("Bearer ", "");
     }
 
@@ -75,35 +74,36 @@ public class AuthenticationService {
 
     public void register(RegisterRequest request) throws MessagingException {
 
-//        userService.existByEmail(request.getEmail());
-//        userService.existByUsername(request.getUsername());
+
 
         userService.checkExistUser(request.getUsername(), request.getEmail());
         UserModel user = userService.loadByUsernameAndEmail(request.getUsername(), request.getEmail());
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-//        user.setRoles(new HashSet<>() {{add(user_role);}});
         userRepository.save(user);
-        emailService.sendEmail(request.getEmail(), request.getUsername(), "http://localhost:80/auth/confirm_email/" + jwtService.generateAccessToken(new HashMap<>(), user));
+        emailService.sendEmail(request.getEmail(), user);
     }
 
-//    public void set_role(String user, ERole role) {
-//        var userModel = userService.loadByUsernameOrEmail(user);
-//        Set<RoleModel> roles = userModel.getRoles();
-//        RoleModel user_role = roleRepository.findByRole(role).orElse(new RoleModel());
-//        roles.add(user_role);
-//        userModel.setRoles(roles);
-//        userRepository.save(userModel);
-//
-//    }
 
-    public void confirm_email(String token) {
+    public String confirm_email(String token) {
 
-       String username = jwtService.extractUsername(token);
-       UserModel user = userRepository.findByUsernameIgnoreCase(username).orElseThrow(()-> new ResourceNotFoundException("User not found"));
-       user.setEnabled(true);
-       userRepository.save(user);
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(token).orElseThrow(() -> new BadTokenException("Bad token"));
+        UserModel user = userRepository.findById(verificationToken.getUser_id()).orElseThrow(() -> {
+            throw new ResourceNotFoundException("User not found");
+        });
+        user.setEnabled(Boolean.TRUE);
+        userRepository.save(user);
+        verificationTokenRepository.delete(verificationToken);
+        return create_token(user);
+    }
+
+    public Cookie get_cookies(String token) {
+        Cookie userTokenCookie = new Cookie("user_token", token);
+        userTokenCookie.setMaxAge(15 * 60 * 1000);
+        userTokenCookie.setHttpOnly(true);
+        userTokenCookie.setSecure(true);
+        return userTokenCookie;
     }
 
 }

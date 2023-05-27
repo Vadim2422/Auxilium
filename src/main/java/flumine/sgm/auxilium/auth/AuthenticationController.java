@@ -3,19 +3,24 @@ package flumine.sgm.auxilium.auth;
 
 import flumine.sgm.auxilium.services.AuthenticationService;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 @RestController
 @RequiredArgsConstructor
 public class AuthenticationController {
+    @Value("${redirect_url}")
+    private String redirect;
 
     private final AuthenticationService service;
 
@@ -31,35 +36,39 @@ public class AuthenticationController {
         service.register(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request
+            @RequestBody AuthenticationRequest request,
+            HttpServletResponse response
     ) {
-        return ResponseEntity.ok(service.authenticate(request));
+        String token = service.authenticate(request);
+        Cookie cookies = service.get_cookies(token);
+        response.addCookie(cookies);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
 
-    @GetMapping("/confirm_email/{token}")
+    @GetMapping("/confirm_email")
     public void confirm_email (
-            @PathVariable String token, HttpServletResponse response) throws IOException {
-        try {
-            service.confirm_email(token);
-        }
-        catch (Exception e)
-        {
-            System.out.println(e.getMessage());
-        }
-        response.sendRedirect("http://localhost/");
+            @RequestParam String token, HttpServletResponse response) throws IOException {
+
+        String user_token = service.confirm_email(token);
+        Cookie cookies = service.get_cookies(user_token);
+        response.addCookie(cookies);
+
+
+
+
+
+        response.sendRedirect(redirect);
     }
 
 
 
-  @GetMapping("/refresh_token")
-  public ResponseEntity<AuthenticationResponse> refresh_token(HttpServletRequest request) {
 
-    return ResponseEntity.ok(service.create_tokens(service.get_user_from_request(request)));
-  }
 
 }
 

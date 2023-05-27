@@ -21,6 +21,6 @@ public class RegisterRequest {
     @NotBlank
     private String email;
     @NotBlank
-    @Pattern(regexp = "/^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/", message = "password should not be simple")
+//    @Pattern(regexp = "/^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/", message = "password should not be simple")
     private String password;
 }

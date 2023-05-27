@@ -1,32 +1,57 @@
 package flumine.sgm.auxilium.services;
+import java.util.Random;
 
+import flumine.sgm.auxilium.models.UserModel;
+import flumine.sgm.auxilium.models.VerificationToken;
+import flumine.sgm.auxilium.repositories.VerificationTokenRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class EmailSenderService {
+public class EmailConfirmationService {
     private final JavaMailSender mailSender;
+    private final VerificationTokenRepository verificationTokenRepository;
+    @Value("${mail_url}")
+    private String url;
 
     public void sendEmail (String toEmail,
-                           String username,
-                           String link) throws MessagingException {
+                           UserModel user) throws MessagingException {
+
+        String code = generateCode();
+        while (verificationTokenRepository.existsByToken(code)) {
+            code = generateCode();
+        }
+        VerificationToken verificationToken = new VerificationToken(code, user.getId());
+        verificationTokenRepository.save(verificationToken);
 
 
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
-            helper.setText(buildEmail(username, link), true);
-            helper.setTo(toEmail);
-            helper.setSubject("Confirm email FOCO");
-            helper.setFrom("breev.vad@gmail.com");
-            mailSender.send(message);
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
+        helper.setText(buildEmail(user.getUsername(), url + "?token=" + code), true);
+        helper.setTo(toEmail);
+        helper.setSubject("Confirm email Auxilion");
+        helper.setFrom("Auxilion");
+        mailSender.send(message);
 
 
-        
+
+    }
+
+    private String generateCode() {
+        int length = 20;
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            sb.append(characters.charAt(random.nextInt(characters.length())));
+        }
+        return sb.toString();
     }
     private String buildEmail(String name, String link) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
