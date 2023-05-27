@@ -20,21 +20,49 @@ public class RoomModel {
     String role;
 
     @Column
+    String model;
+
+    @Column
     Long userid;
 
 
-    public RoomModel(String role, Long userid) {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public Long getUserid() {
+        return userid;
+    }
+
+    public void setUserid(Long userid) {
         this.userid = userid;
-    }
-
-    public RoomModel(RoomModel model) {
-        this.name = model.name;
-        this.role = model.role;
-        userid = model.userid;
-    }
-
-    public RoomModel() {
-
     }
 }

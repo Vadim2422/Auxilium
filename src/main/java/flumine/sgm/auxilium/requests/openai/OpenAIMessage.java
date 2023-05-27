@@ -1,6 +1,6 @@
 package flumine.sgm.auxilium.requests.openai;
 
-public class OpenAIMessage {
+public class OpenAIMessage {//toString?
     protected String role;
     protected String content;
 

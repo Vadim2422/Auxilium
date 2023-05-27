@@ -40,7 +40,7 @@ public class OpenAIService {
                 .build();
     }
 
-    public Mono<OpenAICompletionResponse> sendCompletion(
+    public Mono<OpenAICompletionResponse> sendCompletion(//createroom
             String model,
             String prompt) throws WebClientException {
         var body = new OpenAICompletionRequest(
@@ -58,7 +58,7 @@ public class OpenAIService {
                 .bodyToMono(OpenAICompletionResponse.class);
     }
 
-    public Mono<OpenAIChatCompletionResponse> sendChatCompletionWithContext(
+    public Mono<OpenAIChatCompletionResponse> sendChatCompletionWithContext(//chat
         String model,
         Vector<OpenAIMessage> messages
     ) {
@@ -72,7 +72,7 @@ public class OpenAIService {
                 .bodyToMono(OpenAIChatCompletionResponse.class);
     }
 
-    public Mono<OpenAIModelsResponse> getAllModels() {
+    public Mono<OpenAIModelsResponse> getAllModels() {//getmodels
         return this._webClient
                 .method(HttpMethod.GET)
                 .uri("/models")
