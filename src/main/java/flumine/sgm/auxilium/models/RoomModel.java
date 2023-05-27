@@ -20,18 +20,18 @@ public class RoomModel {
     String role;
 
     @Column
-    Long UserID;
+    Long userid;
 
 
-    public RoomModel(String role, Long userID) {
+    public RoomModel(String role, Long userid) {
         this.role = role;
-        UserID = userID;
+        this.userid = userid;
     }
 
     public RoomModel(RoomModel model) {
         this.name = model.name;
         this.role = model.role;
-        UserID = model.UserID;
+        userid = model.userid;
     }
 
     public RoomModel() {
