@@ -92,7 +92,7 @@ public class AuthenticationService {
         UserModel user = userRepository.findById(verificationToken.getUser_id()).orElseThrow(() -> {
             throw new ResourceNotFoundException("User not found");
         });
-        user.setEnabled(Boolean.TRUE);
+        user.setEnabled(Boolean.TRUE);http://localhost:8080/confirm_email?token=OUD4w29Uipi62aE8AisI
         userRepository.save(user);
         verificationTokenRepository.delete(verificationToken);
         return create_token(user);
@@ -102,7 +102,7 @@ public class AuthenticationService {
         Cookie userTokenCookie = new Cookie("user_token", token);
         userTokenCookie.setMaxAge(15 * 60 * 1000);
         userTokenCookie.setHttpOnly(true);
-        userTokenCookie.setSecure(true);
+//        userTokenCookie.setSecure(true);
         return userTokenCookie;
     }
 

@@ -20,6 +20,7 @@ services:
       SPRING_DATASOURCE_USERNAME: "admin"
       SPRING_DATASOURCE_PASSWORD: "admin"
       SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
+      mail_url: "http://localhost:80/api/confirm_email"
     depends_on:
       - db
     restart: on-failure

@@ -58,11 +58,6 @@ public class AuthenticationController {
         String user_token = service.confirm_email(token);
         Cookie cookies = service.get_cookies(user_token);
         response.addCookie(cookies);
-
-
-
-
-
         response.sendRedirect(redirect);
     }
 

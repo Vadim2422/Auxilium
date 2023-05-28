@@ -1,13 +1,12 @@
 package flumine.sgm.auxilium.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.Date;
 
 @Entity
+@Data
 public class MessageModel {
     @Id
     @GeneratedValue
@@ -15,7 +14,8 @@ public class MessageModel {
     Long id;
 
     @Column
-    String role;
+    @Enumerated(EnumType.STRING)
+    MessageRole role;
 
     @Column
     String content;
@@ -24,12 +24,12 @@ public class MessageModel {
     Long roomid;
 
     @Column
-    Date date;
+    Date date = new Date();
 
-    public MessageModel(Long roomId, String role, String content) {
-        roomid = roomId;
+    public MessageModel(MessageRole role, String content, Long roomid) {
         this.role = role;
         this.content = content;
+        this.roomid = roomid;
     }
 
     public MessageModel() {
