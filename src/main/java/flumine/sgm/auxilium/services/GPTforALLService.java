@@ -18,15 +18,15 @@ import reactor.core.publisher.Mono;
 import java.util.Vector;
 
 @Service
-public class LLamaService {
-
-    protected String _baseUrl = "";
+public class GPTforALLService {
+    //TODO:customize service
+    protected String _baseUrl = "localhost:8090";
 
     protected WebClient _webClient;
 
     protected long _defaultTemperature = 1;
 
-    public LLamaService() {
+    public GPTforALLService() {
         this._webClient = WebClient.builder()
                 .baseUrl(this._baseUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

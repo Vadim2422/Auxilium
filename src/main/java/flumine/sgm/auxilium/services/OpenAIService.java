@@ -1,5 +1,6 @@
 package flumine.sgm.auxilium.services;
 
+import flumine.sgm.auxilium.models.MessageModel;
 import flumine.sgm.auxilium.requests.openai.OpenAIChatCompletionRequest;
 import flumine.sgm.auxilium.requests.openai.OpenAICompletionRequest;
 import flumine.sgm.auxilium.requests.openai.OpenAIMessage;
@@ -18,6 +19,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Vector;
 
 
@@ -63,7 +65,7 @@ public class OpenAIService {
 
     public Mono<OpenAIChatCompletionResponse> sendChatCompletionWithContext(//chat
         String model,
-        Vector<OpenAIMessage> messages
+        List<MessageModel> messages
     ) {
         var body = new OpenAIChatCompletionRequest(model, messages);
 

@@ -1,17 +1,18 @@
 package flumine.sgm.auxilium.responses.openai;
 
+import java.util.List;
 import java.util.Vector;
 
 public class OpenAIChatCompletionResponse {
     protected String id;
     protected String object;
     protected Integer created;
-    protected Vector<OpenAIChatCompletionChoice> choices;
+    protected List<OpenAIChatCompletionChoice> choices;
     protected OpenAIUsage usage;
 
     public OpenAIChatCompletionResponse() {}
 
-    public OpenAIChatCompletionResponse(String id, String object, Integer created, Vector<OpenAIChatCompletionChoice> choices, OpenAIUsage usage) {
+    public OpenAIChatCompletionResponse(String id, String object, Integer created, List<OpenAIChatCompletionChoice> choices, OpenAIUsage usage) {
         this.id = id;
         this.object = object;
         this.created = created;
@@ -43,11 +44,11 @@ public class OpenAIChatCompletionResponse {
         this.created = created;
     }
 
-    public Vector<OpenAIChatCompletionChoice> getChoices() {
+    public List<OpenAIChatCompletionChoice> getChoices() {
         return choices;
     }
 
-    public void setChoices(Vector<OpenAIChatCompletionChoice> choices) {
+    public void setChoices(List<OpenAIChatCompletionChoice> choices) {
         this.choices = choices;
     }
 

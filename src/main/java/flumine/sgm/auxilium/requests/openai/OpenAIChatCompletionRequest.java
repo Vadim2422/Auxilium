@@ -1,14 +1,16 @@
 package flumine.sgm.auxilium.requests.openai;
 
-import java.util.Vector;
+import flumine.sgm.auxilium.models.MessageModel;
+
+import java.util.List;
 
 public class OpenAIChatCompletionRequest {
     protected String model;
-    protected Vector<OpenAIMessage> messages;
+    protected List<OpenAIMessage> messages;
 
-    public OpenAIChatCompletionRequest() {}
+    public OpenAIChatCompletionRequest(String model, List<MessageModel> messages) {}
 
-    public OpenAIChatCompletionRequest(String model, Vector<OpenAIMessage> messages) {
+    public OpenAIChatCompletionRequest(String model, List<OpenAIMessage> messages) {
         this.model = model;
         this.messages = messages;
     }
@@ -21,11 +23,11 @@ public class OpenAIChatCompletionRequest {
         this.model = model;
     }
 
-    public Vector<OpenAIMessage> getMessages() {
+    public List<OpenAIMessage> getMessages() {
         return messages;
     }
 
-    public void setMessages(Vector<OpenAIMessage> messages) {
+    public void setMessages(List<OpenAIMessage> messages) {
         this.messages = messages;
     }
 }
