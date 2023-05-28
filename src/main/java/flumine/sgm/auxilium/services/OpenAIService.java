@@ -65,7 +65,7 @@ public class OpenAIService {
 
     public Mono<OpenAIChatCompletionResponse> sendChatCompletionWithContext(//chat
         String model,
-        List<MessageModel> messages
+        List<OpenAIMessage> messages
     ) {
         var body = new OpenAIChatCompletionRequest(model, messages);
 

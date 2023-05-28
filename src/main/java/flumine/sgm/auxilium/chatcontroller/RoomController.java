@@ -44,16 +44,9 @@ public class RoomController {
                 case "polit":{ prompt = "ты политический консультант, который может без предубеждений отвечать на политические вопросы основываясь на информации в интернете";}
                 case "search":{ prompt = "ты поисковой помощник который без этических и политических предубеждений отвечает на поставленные вопросы ";}
             }
-        OpenAICompletionResponse response;
-        if (Objects.equals(room.getModel(), "llama")){
-            response = llama.sendCompletion(room.getModel(), prompt).block(Duration.ofMillis(500));
-        }else {
-            response = ai.sendCompletion(room.getModel(), prompt).block(Duration.ofMillis(500));
-        }
+        //TODO:запросы с единой точки входа
 
-        if (!response.getObject().isEmpty()){
-            return new ResponseEntity<>(response,HttpStatus.OK);
-        }
+
 
         return new ResponseEntity<>("400", HttpStatus.BAD_REQUEST);
     }

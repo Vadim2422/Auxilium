@@ -8,7 +8,7 @@ public class OpenAIChatCompletionRequest {
     protected String model;
     protected List<OpenAIMessage> messages;
 
-    public OpenAIChatCompletionRequest(String model, List<MessageModel> messages) {}
+
 
     public OpenAIChatCompletionRequest(String model, List<OpenAIMessage> messages) {
         this.model = model;
