@@ -3,16 +3,13 @@ package flumine.sgm.auxilium.services;
 import flumine.sgm.auxilium.requests.openai.OpenAIChatCompletionRequest;
 import flumine.sgm.auxilium.requests.openai.OpenAICompletionRequest;
 import flumine.sgm.auxilium.requests.openai.OpenAIMessage;
-import flumine.sgm.auxilium.requests.openai.OpenAIRequestBody;
 import flumine.sgm.auxilium.responses.openai.OpenAIChatCompletionResponse;
 import flumine.sgm.auxilium.responses.openai.OpenAICompletionResponse;
-import flumine.sgm.auxilium.repositories.ModelClassificationRepository;
-import flumine.sgm.auxilium.repositories.UserRepository;
-
 import flumine.sgm.auxilium.responses.openai.OpenAIModelData;
 import flumine.sgm.auxilium.responses.openai.OpenAIModelsResponse;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
@@ -20,39 +17,29 @@ import reactor.core.publisher.Mono;
 
 import java.util.Vector;
 
-
 @Service
-public class OpenAIService {
-    // Token for OpenAI
-    // protected String token = "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";
-    @Value("${gpt_token}")
-    protected String token;
+public class LLamaService {
 
-    protected String _baseUrl = "https://api.openai.com/v1";
+    protected String _baseUrl = "";
 
     protected WebClient _webClient;
 
     protected long _defaultTemperature = 1;
 
-    public OpenAIService() {
+    public LLamaService() {
         this._webClient = WebClient.builder()
                 .baseUrl(this._baseUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .defaultHeader("Authorization",  "Bearer " + this.token)
                 .build();
     }
 
-
-    public Mono<OpenAICompletionResponse> sendCompletion(//createroom
-            String model,
-            String prompt) throws WebClientException {
+    public Mono<OpenAICompletionResponse> sendCompletion(String model, String prompt) throws WebClientException {
         var body = new OpenAICompletionRequest(
                 model,
                 prompt,
                 100,
                 this._defaultTemperature
         );
-
         return this._webClient
                 .method(HttpMethod.POST)
                 .uri("/completions")
@@ -60,10 +47,9 @@ public class OpenAIService {
                 .retrieve()
                 .bodyToMono(OpenAICompletionResponse.class);
     }
-
     public Mono<OpenAIChatCompletionResponse> sendChatCompletionWithContext(//chat
-        String model,
-        Vector<OpenAIMessage> messages
+                                                                            String model,
+                                                                            Vector<OpenAIMessage> messages
     ) {
         var body = new OpenAIChatCompletionRequest(model, messages);
 
@@ -74,7 +60,6 @@ public class OpenAIService {
                 .retrieve()
                 .bodyToMono(OpenAIChatCompletionResponse.class);
     }
-
     public Mono<OpenAIModelsResponse> getAllModels() {//getmodels
         return this._webClient
                 .method(HttpMethod.GET)
