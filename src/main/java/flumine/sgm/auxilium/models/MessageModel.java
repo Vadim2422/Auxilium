@@ -3,6 +3,7 @@ package flumine.sgm.auxilium.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
